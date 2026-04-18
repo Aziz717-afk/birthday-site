@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday</title>
+
+<style>
+body {
+  margin: 0;
+  overflow: hidden;
+  background: black;
+  font-family: Arial, sans-serif;
+}
+
+/* MATRIX */
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+/* TEXT */
+h1 {
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ff4da6;
+  font-size: 50px;
+  text-shadow: 0 0 20px #ff4da6;
+}
+
+/* BUTTON */
+button {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 15px 30px;
+  font-size: 18px;
+  background: #ff4da6;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  color: white;
+  box-shadow: 0 0 15px #ff4da6;
+}
+
+/* CARD OVERLAY */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+/* CARD */
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  width: 300px;
+  text-align: center;
+  animation: scaleIn 0.5s ease;
+}
+
+@keyframes scaleIn {
+  from {transform: scale(0);}
+  to {transform: scale(1);}
+}
+
+.card img {
+  width: 100%;
+  border-radius: 12px;
+}
+
+.card h2 {
+  margin: 10px 0;
+}
+
+.card p {
+  font-size: 14px;
+}
+
+/* CONFETTI */
+.confetti {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background: red;
+  animation: fall 3s linear infinite;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(100vh) rotate(360deg);
+  }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="matrix"></canvas>
+
+<h1>HAPPY BIRTHDAY</h1>
+<button onclick="openCard()">Открыть 🎁</button>
+
+<!-- CARD -->
+<div class="overlay" id="overlay">
+  <div class="card">
+    <h2>С Днём Рождения 💖</h2>
+
+    <!-- ВСТАВЬ СЮДА СВОЁ ФОТО -->
+    <img src="https://via.placeholder.com/300" alt="photo">
+
+    <p>Пусть все мечты сбудутся ✨<br>Ты заслуживаешь самого лучшего 💫</p>
+
+    <button onclick="closeCard()">Закрыть</button>
+  </div>
+</div>
+
+<!-- MUSIC -->
+<audio id="music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+
+<script>
+// MATRIX
+const canvas = document.getElementById("matrix");
+const ctx = canvas.getContext("2d");
+
+canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
+
+const letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const fontSize = 14;
+const columns = canvas.width / fontSize;
+
+const drops = Array.from({length: columns}).fill(1);
+
+function draw() {
+  ctx.fillStyle = "rgba(0,0,0,0.05)";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  ctx.fillStyle = "#ff4da6";
+  ctx.font = fontSize + "px monospace";
+
+  drops.forEach((y, i) => {
+    const text = letters[Math.floor(Math.random()*letters.length)];
+    ctx.fillText(text, i * fontSize, y * fontSize);
+
+    if (y * fontSize > canvas.height && Math.random() > 0.975) {
+      drops[i] = 0;
+    }
+    drops[i]++;
+  });
+}
+
+setInterval(draw, 33);
+
+// OPEN CARD
+function openCard() {
+  document.getElementById("overlay").style.display = "flex";
+
+  // music
+  document.getElementById("music").play();
+
+  // confetti
+  for (let i = 0; i < 100; i++) {
+    let conf = document.createElement("div");
+    conf.className = "confetti";
+    conf.style.left = Math.random()*100 + "vw";
+    conf.style.background = `hsl(${Math.random()*360},100%,50%)`;
+    conf.style.animationDuration = (Math.random()*3+2)+"s";
+    document.body.appendChild(conf);
+  }
+}
+
+function closeCard() {
+  document.getElementById("overlay").style.display = "none";
+}
+</script>
+
+</body>
+</html>
