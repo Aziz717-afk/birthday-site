@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Открой сюрприз 💖</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin:0;
+  overflow:hidden;
+  background: radial-gradient(circle, #0f0f0f, #000);
+  color:white;
+  font-family: 'Poppins', sans-serif;
+  text-align:center;
+}
+
+/* COUNTDOWN */
+#count {
+  font-size:90px;
+  position:absolute;
+  top:40%;
+  left:50%;
+  transform:translate(-50%,-50%);
+}
+
+/* TEXT */
+.text {
+  display:none;
+  font-family:'Great Vibes', cursive;
+  font-size:70px;
+  position:absolute;
+  top:40%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  animation: fadeIn 1s ease;
+}
+
+/* ENVELOPE */
+#envelope {
+  display:none;
+  font-size:90px;
+  cursor:pointer;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  animation: float 2s infinite ease-in-out;
+}
+
+/* SLIDER */
+#slider {
+  display:none;
+}
+
+.slide img {
+  width:80%;
+  border-radius:20px;
+  margin-top:50px;
+  animation: fadeIn 1s;
+}
+
+/* HEART */
+#heart {
+  display:none;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+}
+
+.heart-img {
+  position:absolute;
+  width:70px;
+  border-radius:10px;
+}
+
+/* HEART FLOAT */
+@keyframes fall {
+  to {
+    transform: translateY(100vh);
+    opacity:0;
+  }
+}
+
+@keyframes fadeIn {
+  from {opacity:0; transform: translate(-50%, -60%);}
+  to {opacity:1; transform: translate(-50%, -50%);}
+}
+
+@keyframes float {
+  0%,100%{transform:translate(-50%,-50%)}
+  50%{transform:translate(-50%,-55%)}
+}
+</style>
+</head>
+
+<body>
+
+<div id="count">3</div>
+
+<div id="happy" class="text">Happy</div>
+<div id="birthday" class="text">Birthday</div>
+
+<div id="envelope">💌</div>
+
+<div id="slider">
+  <div class="slide"><img sec="https://ibb.co/D0H2qmL">
+  <div class="slide"><img src="https://ibb.co/XxsmYnmZ">
+  <div class="slide"><img src="https://ibb.co/VX7j3yQ">
+  <div class="slide"><img src="https://ibb.co/fdKW5xhm">
+</div>
+
+<div id="heart"></div>
+
+<audio id="music" src="MUSIC.mp3"></audio>
+
+<script>
+// COUNTDOWN
+let n=3;
+let count=document.getElementById("count");
+
+let c=setInterval(()=>{
+  n--;
+  if(n==0){
+    clearInterval(c);
+    count.style.display="none";
+    showText();
+  } else {
+    count.innerText=n;
+  }
+},1000);
+
+// TEXT
+function showText(){
+  let h=document.getElementById("happy");
+  let b=document.getElementById("birthday");
+
+  h.style.display="block";
+
+  setTimeout(()=>{
+    h.style.display="none";
+    b.style.display="block";
+  },1500);
+
+  setTimeout(()=>{
+    b.style.display="none";
+    showEnvelope();
+  },3000);
+}
+
+// ENVELOPE
+function showEnvelope(){
+  let e=document.getElementById("envelope");
+  e.style.display="block";
+
+  e.onclick=()=>{
+    document.getElementById("music").play();
+    e.style.display="none";
+    startSlider();
+    hearts();
+  }
+}
+
+// SLIDER
+function startSlider(){
+  let slides=document.querySelectorAll(".slide");
+  let i=0;
+  document.getElementById("slider").style.display="block";
+
+  function show(){
+    slides.forEach(s=>s.style.display="none");
+    slides[i].style.display="block";
+    i++;
+
+    if(i<slides.length){
+      setTimeout(show,2500);
+    } else {
+      setTimeout(showHeart,2000);
+    }
+  }
+  show();
+}
+
+// HEART FROM PHOTOS
+function showHeart(){
+  document.getElementById("slider").style.display="none";
+  let heart=document.getElementById("heart");
+  heart.style.display="block";
+
+  let pos=[
+    [0,40],[20,20],[40,10],[60,20],[80,40],
+    [20,60],[40,80],[60,60]
+  ];
+
+  pos.forEach((p,i)=>{
+    let img=document.createElement("img");
+    img.src="PHOTO1";
+    img.className="heart-img";
+    img.style.left=p[0]+"%";
+    img.style.top=p[1]+"%";
+    heart.appendChild(img);
+  });
+}
+
+// FLOATING HEARTS
+function hearts(){
+  setInterval(()=>{
+    let h=document.createElement("div");
+    h.innerHTML="💖";
+    h.style.position="fixed";
+    h.style.left=Math.random()*100+"vw";
+    h.style.top="-10px";
+    h.style.animation="fall 4s linear";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),4000);
+  },300);
+}
+</script>
+
+</body>
+</html>
