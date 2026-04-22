@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Открой сюрприз 💖</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  background:black;
+  overflow:hidden;
+  color:white;
+  text-align:center;
+}
+
+/* COUNT */
+#count{
+  font-size:90px;
+  position:absolute;
+  top:45%;
+  left:50%;
+  transform:translate(-50%,-50%);
+}
+
+/* TEXT */
+.text{
+  display:none;
+  font-family:'Great Vibes',cursive;
+  font-size:70px;
+  position:absolute;
+  top:45%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  opacity:0;
+  transition:1s;
+}
+
+/* ENVELOPE */
+#envelope{
+  display:none;
+  font-size:90px;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  cursor:pointer;
+}
+
+/* SLIDES */
+#slider{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  display:none;
+}
+.slide{
+  position:absolute;
+  opacity:0;
+  transition:1s;
+}
+.slide img{
+  width:80vw;
+  border-radius:20px;
+}
+
+/* CANVAS HEART */
+#heartCanvas{
+  display:none;
+  position:absolute;
+  top:0;
+  left:0;
+}
+
+/* FLOAT HEART */
+@keyframes fall{
+  to{transform:translateY(100vh);opacity:0;}
+}
+</style>
+</head>
+
+<body>
+
+<div id="count">3</div>
+
+<div id="happy" class="text">Happy</div>
+<div id="birthday" class="text">Birthday</div>
+
+<div id="envelope">💌</div>
+
+<div id="slider">
+  <div class="slide"><img src="https://ibb.co/D0H2qmL"></div>
+  <div class="slide"><img src="https://ibb.co/YFN1Cvbp"></div>
+  <div class="slide"><img src="https://ibb.co/VX7j3yQ"></div>
+</div>
+
+<canvas id="heartCanvas"></canvas>
+
+<audio id="music" src="MUSIC.mp3"></audio>
+
+<script>
+// COUNTDOWN
+let n=3;
+let c=setInterval(()=>{
+  n--;
+  if(n==0){
+    clearInterval(c);
+    count.style.display="none";
+    showText();
+  } else count.innerText=n;
+},1000);
+
+// TEXT
+function showText(){
+  let h=happy,b=birthday;
+  h.style.display="block";
+  setTimeout(()=>h.style.opacity=1,100);
+
+  setTimeout(()=>{
+    h.style.opacity=0;
+    setTimeout(()=>{
+      h.style.display="none";
+      b.style.display="block";
+      setTimeout(()=>b.style.opacity=1,100);
+    },500);
+  },1500);
+
+  setTimeout(()=>{
+    b.style.opacity=0;
+    setTimeout(()=>{
+      b.style.display="none";
+      showEnvelope();
+    },500);
+  },3000);
+}
+
+// ENVELOPE
+function showEnvelope(){
+  envelope.style.display="block";
+  envelope.onclick=()=>{
+    envelope.style.display="none";
+    music.play();
+    startSlider();
+    floatHearts();
+  }
+}
+
+// SLIDER
+function startSlider(){
+  let slides=document.querySelectorAll(".slide");
+  slider.style.display="block";
+  let i=0;
+
+  function show(){
+    slides.forEach(s=>s.style.opacity=0);
+    slides[i].style.opacity=1;
+
+    i++;
+    if(i<slides.length){
+      setTimeout(show,2500);
+    } else {
+      setTimeout(showHeart,2000);
+    }
+  }
+  show();
+}
+
+// FLOAT HEARTS
+function floatHearts(){
+  setInterval(()=>{
+    let h=document.createElement("div");
+    h.innerHTML="💖";
+    h.style.position="fixed";
+    h.style.left=Math.random()*100+"vw";
+    h.style.top="-10px";
+    h.style.animation="fall 4s linear";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),4000);
+  },300);
+}
+
+// HEART CANVAS (КАК В TIKTOK)
+function showHeart(){
+  slider.style.display="none";
+
+  let canvas=document.getElementById("heartCanvas");
+  let ctx=canvas.getContext("2d");
+
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+  canvas.style.display="block";
+
+  let img=new Image();
+  img.src="https://i.ibb.co/abc123/photo.jpg";
+
+  let particles=[];
+
+  img.onload=()=>{
+    for(let t=0;t<Math.PI*2;t+=0.05){
+      let x=16*Math.pow(Math.sin(t),3);
+      let y=13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t);
+
+      particles.push({
+        x:canvas.width/2 + x*15,
+        y:canvas.height/2 - y*15,
+        size:40
+      });
+    }
+
+    function draw(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+
+      particles.forEach(p=>{
+        ctx.drawImage(img,p.x,p.y,p.size,p.size);
+      });
+
+      requestAnimationFrame(draw);
+    }
+    draw();
+  }
+}
+</script>
+
+</body>
+</html>
